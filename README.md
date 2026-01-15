@@ -9,7 +9,7 @@ Conversely, the architecture supports voluntary deflation. To reduce the supply,
 
 ## Motivation
 
-Current methods for tokenization often rely on Layer 2 indexers or heavy state machines. This proposal leverages the UTXO model and new introspection capabilities to create "Colored UTXO" that are enforced mathematically by the Kaspa network consensus itself.
+Current methods for tokenization rely on Layer 2 indexers (KRC20 & KNS). This proposal leverages the UTXO model and new introspection capabilities to create "Colored UTXO" that are enforced mathematically by the Kaspa network consensus itself.
 
 The introduction of this framework will:
 1.  Enable atomic swaps and decentralized exchanges purely on L1.
