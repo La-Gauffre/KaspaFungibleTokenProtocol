@@ -32,101 +32,71 @@ Where `<LEN_LOGIC>` defined below includes the `OpPushData` instruction bytes.
 
 #### Assembly Implementation
 
-```assembly
-// =========================================================================
-// STATELESS COVENANT (Integrated PushData)
-// =========================================================================
 
-// Note: <LEN_LOGIC> now includes the OpPushData opcode at the very end.
-// Structure: [ ...Logic... OpPushData1 0x08 ] [ Amount ] [ OpDrop ]
+
+// Note: <LEN_LOGIC>  includes all the logic of the token without the amount
+// Structure: [ ...Logic... ] [ Amount ] [ OpDrop ]
 
 // -------------------------------------------------------------------------
 // 1. SECURITY & INITIALIZATION
 // -------------------------------------------------------------------------
 
 // Check Input Count < 6
-OpTxInputCount
-Op6
-OpLessThan
-OpVerify
+OpTxInputCount 6 OpLessThan OpVerify
 
 // Check Output Count < 6
-OpTxOutputCount
-Op6
-OpLessThan
-OpVerify
+OpTxOutputCount 6 OpLessThan OpVerify
 
 // Initialize accumulator to 0 on the stack
 // Stack: [0]
-OpFalse
+0
 
 
 // =========================================================================
-// 2. INPUTS LOOP (ADDITION) - INDEX 0 to 4
+// 2. INPUTS LOOP (SUM) - INDEX 0 to 4
 // =========================================================================
 
 // --- INPUT 0 ---
-OpTxInputCount OpFalse OpGreaterThan OpIf
-    OpFalse OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Script Integrity (Includes the Push instruction)
-        OpFalse OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Add (Starts exactly after logic)
-        OpFalse OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxInputSpkSubstr
-        OpBin2Num OpAdd
-    OpEndIf
+0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
+    0 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
+    0 <LEN_LOGIC> <LEN_LOGIC+8> OpTxInputSpkSubstr  // Extract Amount
+    OpBin2Num OpAdd //Add amount on the stack
 OpEndIf
 
+
 // --- INPUT 1 ---
-OpTxInputCount OpTrue OpGreaterThan OpIf
-    OpTrue OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Script Integrity
-        OpTrue OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Add
-        OpTrue OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxInputSpkSubstr
-        OpBin2Num OpAdd
+OpTxInputCount 1 OpGreaterThan OpIf
+    1 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
+        1 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
+        1 <LEN_LOGIC> <LEN_LOGIC+8> OpTxInputSpkSubstr  // Extract Amount
+        OpBin2Num OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
 // --- INPUT 2 ---
 OpTxInputCount Op2 OpGreaterThan OpIf
-    Op2 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Script Integrity
-        Op2 OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Add
-        Op2 OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxInputSpkSubstr
-        OpBin2Num OpAdd
+    Op2 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
+        Op2 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
+        Op2 <LEN_LOGIC> <LEN_LOGIC+8> OpTxInputSpkSubstr  // Extract Amount
+        OpBin2Num OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
 // --- INPUT 3 ---
 OpTxInputCount Op3 OpGreaterThan OpIf
-    Op3 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Script Integrity
-        Op3 OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Add
-        Op3 OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxInputSpkSubstr
-        OpBin2Num OpAdd
+    Op3 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
+        Op3 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
+        Op3 <LEN_LOGIC> <LEN_LOGIC+8> OpTxInputSpkSubstr  // Extract Amount
+        OpBin2Num OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
 // --- INPUT 4 ---
 OpTxInputCount Op4 OpGreaterThan OpIf
-    Op4 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Script Integrity
-        Op4 OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Add
-        Op4 OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxInputSpkSubstr
-        OpBin2Num OpAdd
+    Op4 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
+        Op4 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
+        Op4 <LEN_LOGIC> <LEN_LOGIC+8> OpTxInputSpkSubstr  // Extract Amount
+        OpBin2Num OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
@@ -136,67 +106,45 @@ OpEndIf
 // =========================================================================
 
 // --- OUTPUT 0 ---
-OpTxOutputCount OpFalse OpGreaterThan OpIf
-    OpFalse OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Output Script matches My Script
-        OpFalse OpFalse OpPushData1 <LEN_LOGIC> OpTxOutputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Subtract
-        OpFalse OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxOutputSpkSubstr
-        OpBin2Num OpSub
-    OpEndIf
+0 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
+        0 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
+        0 <LEN_LOGIC> <LEN_LOGIC+8> OpTxOutputSpkSubstr  //Extract Amount
+        OpBin2Num OpSub //Substract amount on the stack
 OpEndIf
 
 // --- OUTPUT 1 ---
-OpTxOutputCount OpTrue OpGreaterThan OpIf
-    OpTrue OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Output Script matches My Script
-        OpTrue OpFalse OpPushData1 <LEN_LOGIC> OpTxOutputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Subtract
-        OpTrue OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxOutputSpkSubstr
-        OpBin2Num OpSub
+OpTxOutputCount 1 OpGreaterThan OpIf
+    1 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
+        1 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
+        1 <LEN_LOGIC> <LEN_LOGIC+8> OpTxOutputSpkSubstr  //Extract Amount
+        OpBin2Num OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
 // --- OUTPUT 2 ---
 OpTxOutputCount Op2 OpGreaterThan OpIf
-    Op2 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Output Script matches My Script
-        Op2 OpFalse OpPushData1 <LEN_LOGIC> OpTxOutputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Subtract
-        Op2 OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxOutputSpkSubstr
-        OpBin2Num OpSub
+    Op2 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
+        Op2 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
+        Op2 <LEN_LOGIC> <LEN_LOGIC+8> OpTxOutputSpkSubstr  //Extract Amount
+        OpBin2Num OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
 // --- OUTPUT 3 ---
 OpTxOutputCount Op3 OpGreaterThan OpIf
-    Op3 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Output Script matches My Script
-        Op3 OpFalse OpPushData1 <LEN_LOGIC> OpTxOutputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Subtract
-        Op3 OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxOutputSpkSubstr
-        OpBin2Num OpSub
+    Op3 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
+        Op3 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
+        Op3 <LEN_LOGIC> <LEN_LOGIC+8> OpTxOutputSpkSubstr  //Extract Amount
+        OpBin2Num OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
 // --- OUTPUT 4 ---
 OpTxOutputCount Op4 OpGreaterThan OpIf
-    Op4 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf
-        // Verify Output Script matches My Script
-        Op4 OpFalse OpPushData1 <LEN_LOGIC> OpTxOutputSpkSubstr
-        OpTxInputIndex OpFalse OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr
-        OpEqualVerify
-        // Extract Amount and Subtract
-        Op4 OpPushData1 <LEN_LOGIC> OpPushData1 <LEN_LOGIC+8> OpTxOutputSpkSubstr
-        OpBin2Num OpSub
+    Op4 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
+        Op4 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
+        Op4 <LEN_LOGIC> <LEN_LOGIC+8> OpTxOutputSpkSubstr  //Extract Amount
+        OpBin2Num OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
@@ -207,17 +155,10 @@ OpEndIf
 
 // Stack state: [Accumulator]
 // Must be equal to 0 (Total Inputs == Total Outputs)
-OpFalse
+0
 OpEqual
 
-// -------------------------------------------------------------------------
-// PADDING (THIS IS NOW PART OF <LEN_LOGIC>)
-// -------------------------------------------------------------------------
-// OpPushData1  (The OpCode)
-// 0x08         (The Length of data to push)
+// Amount of tokens
+0x08  <Amount>  OpDrop
 
-// -------------------------------------------------------------------------
-// DATA (Starts at <LEN_LOGIC>)
-// -------------------------------------------------------------------------
-// [8 bytes AMOUNT]
-// OpDrop
+
