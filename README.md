@@ -26,16 +26,13 @@ Below is the optimized opcode implementation for the token standard. This script
 
 #### Script Structure
 The `scriptPubKey` is constructed as follows:
-`[ ...Logic Opcodes... ] [ OpPushData1 ] [ 0x08 ] [ 8-byte Amount ] [ OpDrop ]`
+`[ ...Logic Opcodes... ] [ 8-byte Amount ] [ OpDrop ]`
 
-Where `<LEN_LOGIC>` defined below includes the `OpPushData` instruction bytes.
+Where `<LEN_LOGIC>` defined below end at opcode 0x08 
 
 #### Assembly Implementation
 
-
-
-// Note: <LEN_LOGIC>  includes all the logic of the token without the amount
-// Structure: [ ...Logic... ] [ Amount ] [ OpDrop ]
+```
 
 // -------------------------------------------------------------------------
 // 1. SECURITY & INITIALIZATION
@@ -161,4 +158,5 @@ OpEqual
 // Amount of tokens
 0x08  <Amount>  OpDrop
 
+```
 
