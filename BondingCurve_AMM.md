@@ -27,25 +27,6 @@ Where:
 
 This formulation ensures that the token price increases as supply is distributed, incentivizing early participation while preserving mathematical simplicity for on-chain verification.
 
-A visual representation of the linear bonding curve is shown below:
-
-P(V)
-|
-|           *
-|          *
-|         *
-|        *
-|       *
-|      *
-|     *
-|    *
-|   *
-|  *
-| *
-|*
-|________________ V
-
-
 ---
 
 ## Transaction Verification along the Curve
@@ -69,10 +50,10 @@ Let:
 - `K_in` be the Kaspa amount provided by the user  
 - `K_out` be the Kaspa amount returned to the user  
 
-Then, the total Kaspa exchanged should correspond approximately to the area under the bonding curve between `V1` and `V2`:
+Then, the total Kaspa exchanged should correspond to the area under the bonding curve between `V1` and `V2`:
 
 
-| K_out – K_in | = 
+`| K_out – K_in | = 1/2(V2^2-V1^2)` 
 
 
 Because exact equality is impractical to enforce on-chain due to integer arithmetic and rounding, the covenant verifies **inequality constraints** based on the transaction direction:
