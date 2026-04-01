@@ -14,60 +14,67 @@ This hybrid approach aims to provide fair initial distribution, eliminate relian
 
 The bonding curve defines a deterministic relationship between the token price and the cumulative volume of tokens sold since inception.
 
-In this protocol, we adopt a simple quadratic pricing function:
+In this protocol, we adopt a simple linear pricing function:
 
-P(T) = a + b * V(T)^2
+`P(V) = a * V + b`
+
 
 Where:
 
-- P(T) denotes the price of token T expressed in Kaspa  
-- a, b are constant parameters defining the curve shape  
-- V(T) represents the cumulative volume of tokens sold since genesis  
+- `P(V)` denotes the price of token T expressed in Kaspa  
+- `a`, `b` are constant parameters defining the linear curve  
+- `V` represents the cumulative volume of tokens sold since genesis  
 
-This formulation ensures that the token price increases non-linearly as supply is distributed, incentivizing early participation while preserving mathematical simplicity for on-chain verification.
+This formulation ensures that the token price increases as supply is distributed, incentivizing early participation while preserving mathematical simplicity for on-chain verification.
+
+A visual representation of the linear bonding curve is shown below:
+
+P(V)
+|
+|           *
+|          *
+|         *
+|        *
+|       *
+|      *
+|     *
+|    *
+|   *
+|  *
+| *
+|*
+|________________ V
+
 
 ---
 
-## Covenant Validation Logic
+## Transaction Verification along the Curve
 
-Within the covenant framework, it is not practical to verify the absolute position on the bonding curve due to computational and precision constraints inherent to on-chain execution. Instead, the protocol validates **value differentials** between transaction inputs and outputs.
+Since the price depends on the number of tokens sold since genesis, the **cumulative cost of tokens** must be verified for each transaction to prevent exploitation. This corresponds to calculating the **area under the curve** between the token balances before and after a transaction.
 
 Let:
 
-- K_in be the Kaspa amount provided as input  
-- K_out be the Kaspa amount returned as output  
-- T_in, T_out be the token balances before and after the transaction  
+- `T_in`, `T_out` be the token balances before and after the transaction  
+- `S` be the total supply of tokens  
 
-The ideal equality condition would be:
+The cumulative number of tokens sold is:
 
-K_out - K_in = P(T_out) - P(T_in)
+`V1 = S - T_in`
 
-However, strict equality is impractical to enforce due to integer arithmetic and rounding limitations in covenant execution. Therefore, the protocol enforces **inequality constraints**, depending on the transaction direction:
+`V2 = S - T_out`
+
+
+Let:
+
+- `K_in` be the Kaspa amount provided by the user  
+- `K_out` be the Kaspa amount returned to the user  
+
+Then, the total Kaspa exchanged should correspond approximately to the area under the bonding curve between `V1` and `V2`:
+
+
+| K_out – K_in | = 
+
+
+Because exact equality is impractical to enforce on-chain due to integer arithmetic and rounding, the covenant verifies **inequality constraints** based on the transaction direction:
 
 ### Token Purchase (Interaction with Bonding Curve)
-
-When a user buys tokens from the bonding curve:
-
-K_out - K_in >= P(T_out) - P(T_in)
-
-This ensures that the user provides sufficient Kaspa relative to the increase in token valuation.
-
-### Token Sale (Interaction with Bonding Curve)
-
-When a user sells tokens back to the bonding curve:
-
-K_out - K_in <= P(T_out) - P(T_in)
-
-This guarantees that the Kaspa returned does not exceed the theoretical value defined by the curve.
-
----
-
-## Design Rationale
-
-By enforcing inequalities rather than strict equalities, the covenant remains:
-
-- **Robust to rounding errors** inherent in integer-based computation  
-- **Efficient to verify on-chain**, minimizing script complexity  
-- **Secure**, preventing value extraction through precision exploits  
-
-This design ensures that all interactions remain bounded by the intended pricing function, while preserving the feasibility of implementation within the Kaspa covenant model.
