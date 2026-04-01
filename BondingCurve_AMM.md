@@ -55,7 +55,10 @@ Then, the total Kaspa exchanged should correspond to the area under the bonding 
 
 `| K_out – K_in | = 1/2(V2^2-V1^2)` 
 
+However, To mitigate the risk of integer overflows, the covennat design should avoid squared computation and other high-growth arithmetic operations. For a linear pricing function, the integral between two points can be simplified into a closed-form expression. The area under the curve is equivalent to the product of the change in volume and the average of the initial and final prices, eliminating the need for higher-order computations. Then we need to verify: 
 
-Because exact equality is impractical to enforce on-chain due to integer arithmetic and rounding, the covenant verifies **inequality constraints** based on the transaction direction:
+`| K_out – K_in | = 1/2*(P(V2)-P(V1))*(V2-V1)`
+
+Because exact equality is impractical to enforce on-chain due to  rounding, the covenant must verifies **inequality constraints** based on the transaction direction:
 
 ### Token Purchase (Interaction with Bonding Curve)
