@@ -85,4 +85,4 @@ Once the price is above the target price of the bounding curve, then, we step up
 
 We have to verify: 
 
-` K_in * T_in >= K_out * T_out` 
+`K_out * T_out >= K_in * T_in` 
