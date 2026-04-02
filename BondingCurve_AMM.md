@@ -76,3 +76,13 @@ As 'K_out <= K_in', we need to verifiy the below inequality:
 ` K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)`
 
 So, we are sure to receive less or equal than the cumulated price
+
+---
+
+## Automated Market Maker (AMM)
+
+Once the price is above the target price of the bounding curve, then, we step up in the AMM mode. we need to check that for each transaction, the constant of the Amm is the same between the input and the output. 
+
+We have to verify: 
+
+` K_in * T_in >= K_out * T_out` 
