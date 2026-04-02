@@ -61,4 +61,18 @@ However, To mitigate the risk of integer overflows, the covennat design should a
 
 Because exact equality is impractical to enforce on-chain due to  rounding, the covenant must verifies **inequality constraints** based on the transaction direction:
 
-### Token Purchase (Interaction with Bonding Curve)
+### Token Purchase (Interaction with Bonding Curve) 
+
+As 'K_out >= K_in', we need to verifiy the below inequality:
+
+` K_out – K_in >= 1/2*(P(V2)-P(V1))*(V2-V1)`
+
+So, we are sure to pay more or equal than the cumulated price
+
+### Token Sold (Interaction with Bonding Curve) 
+
+As 'K_out <= K_in', we need to verifiy the below inequality:
+
+` K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)`
+
+So, we are sure to receive less or equal than the cumulated price
