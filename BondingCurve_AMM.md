@@ -81,7 +81,7 @@ So, we are sure to receive less or equal than the cumulated price
 
 ## Automated Market Maker (AMM)
 
-Once the price is above the target price of the bounding curve, then, we step up in the AMM mode. we need to check that for each transaction, the constant of the Amm is the same between the input and the output. 
+Once the price is above the target price of the bounding curve, then, we step up in the AMM mode. we need to check that for each transaction, the constant of the AMM is the same between the input and the output. 
 
 We have to verify: 
 
