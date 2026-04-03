@@ -87,6 +87,14 @@ We have to verify:
 
 `K_out * T_out >= K_in * T_in` 
 
+#### Script Structure
+The `scriptPubKey` is constructed as follows:
+`[ ...Logic Opcodes... ] [ 8-byte Amount ] [ OpDrop ]`
+
+Where `<LEN_LOGIC>` defined below end at opcode 0x08 
+
+#### Assembly Implementation
+
 
 ```
 
