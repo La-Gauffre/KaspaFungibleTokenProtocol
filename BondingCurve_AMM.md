@@ -102,11 +102,12 @@ Additionally, the covenant guarantees that the transition can only occur when th
 
 #### Script Structure
 
-The protocol will force to always have the The `scriptPubKey` is constructed as follows:
+The protocol will force to always have the Bonding Curve / AMM UTXO in Input 0 & in Output 0.
+The `scriptPubKey` is constructed as follows:
 
-`[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...1-byte Amount + OP IF...] [...Bonding curve Logic Opcode...] [...Bonding curve Logic Opcode...]`
+`[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...Security + Binary flag Logic Opcode...] [...Bonding curve Logic Opcode...] [...Bonding curve Logic Opcode...]`
 
-Where `<LEN_LOGIC>` defined below end at opcode 0x08 
+Where `<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol 
 
 #### Assembly Implementation
 
@@ -117,7 +118,7 @@ Where `<LEN_LOGIC>` defined below end at opcode 0x08
 // 1. SECURITY & INITIALIZATION
 // -------------------------------------------------------------------------
 
-// Check Input Count < 6
+// Check Input 0 & Output 0 have the same covenant_ID
 OpTxInputCount 6 OpLessThan OpVerify
 
 // Check Output Count < 6
