@@ -87,9 +87,24 @@ We have to verify:
 
 `K_out * T_out >= K_in * T_in` 
 
+---
+
+## Switch from the Bonding Curve to the AMM
+
+A binary flag is embedded at the beginning of the covenant script to determine which pricing mechanism is active.
+
+- If the value is `0`, the system operates under the bonding curve model.  
+- Once the bonding curve reaches its completion threshold, the flag is permanently switched to `1`, activating the AMM mode.
+
+The covenant enforces that this transition is **irreversible**, ensuring that once the AMM phase is reached, the system cannot revert to the bonding curve.
+
+Additionally, the covenant guarantees that the transition can only occur when the bonding curve conditions are fully satisfied, preventing any premature or invalid state change.
+
 #### Script Structure
-The `scriptPubKey` is constructed as follows:
-`[ ...Logic Opcodes... ] [ 8-byte Amount ] [ OpDrop ]`
+
+The protocol will force to always have the The `scriptPubKey` is constructed as follows:
+
+`[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...1-byte Amount + OP IF...] [...Bonding curve Logic Opcode...] [...Bonding curve Logic Opcode...]`
 
 Where `<LEN_LOGIC>` defined below end at opcode 0x08 
 
