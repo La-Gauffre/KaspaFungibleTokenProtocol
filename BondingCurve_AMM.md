@@ -146,7 +146,7 @@ OpTxInputIndex OpTxInputCovId 0 OpTxOutputCovId OpEqual
 OpEqual
 
 // Check if we calculate via the bonding curve or the AMM
-
+0 
 // -------------------------------------------------------------------------
 // 3. BONDING CURVE LOGIC OPCODE
 // -------------------------------------------------------------------------
