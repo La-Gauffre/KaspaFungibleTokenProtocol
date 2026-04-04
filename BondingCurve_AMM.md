@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This paper introduces a covenant-based mechanism for launching and distributing tokens built on top of the KaspaFungibleTokenProtocol with the states in **the same UTXO**. The proposed design combines two distinct liquidity phases: an initial **Bonding Curve** distribution phase, followed by a seamless transition to an **Automated Market Maker (AMM)**.
+This paper introduces a covenant-based mechanism for launching and distributing tokens built on top of the [KaspaFungibleTokenProtocol](https://github.com/ton-username/ton-repo) with the states in **the same UTXO**. The proposed design combines two distinct liquidity phases: an initial **Bonding Curve** distribution phase, followed by a seamless transition to an **Automated Market Maker (AMM)**.
 
 During the first phase, tokens are issued deterministically along a predefined pricing curve, ensuring predictable and transparent price discovery from genesis. Once the bonding curve reaches its completion threshold, liquidity is migrated into an AMM, enabling continuous and decentralized trading.
 
