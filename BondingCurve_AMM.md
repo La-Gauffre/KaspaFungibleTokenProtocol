@@ -146,16 +146,20 @@ OpTxInputIndex OpTxInputCovId 0 OpTxOutputCovId OpEqual OpVerify
 OpEqual OpVerify
 
 // Check if we calculate via the bonding curve or the AMM
-0 OpEqual Op
-// -------------------------------------------------------------------------
-// 3. BONDING CURVE LOGIC OPCODE
-// -------------------------------------------------------------------------
+0 OpEqual OpIf
+
+    // -------------------------------------------------------------------------
+    // 3. BONDING CURVE LOGIC OPCODE
+    // -------------------------------------------------------------------------
 
 
 
-// =========================================================================
-// 4. AMM LOGIC OPCODE
-// =========================================================================
+OpElse
+
+    // =========================================================================
+    // 4. AMM LOGIC OPCODE
+    // =========================================================================
+    
 
 
 
@@ -165,14 +169,10 @@ OpEqual OpVerify
 
 
 
+OpEndif
 
 
-// --- INPUT 0 ---
-0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
-    0 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
-    0 <LEN_LOGIC> <LEN_LOGIC+8> OpTxInputSpkSubstr  // Extract Amount
-    OpBin2Num OpAdd //Add amount on the stack
-OpEndIf
+
 
 
 // --- INPUT 1 ---
