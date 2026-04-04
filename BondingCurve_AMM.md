@@ -119,10 +119,10 @@ Where:
 ```
 
 // -------------------------------------------------------------------------
-// 1. KASPAFUNGIBLETOKENPROTOCOL
+// 1. KASPA FUNGIBLE TOKEN PROTOCOL
 // -------------------------------------------------------------------------
 
-
+//Just copy & paste the KASPA FUNGIBLE TOKEN PROTOCOL logic here
 
 // -------------------------------------------------------------------------
 // 2. BINARY FLAG + SECURITY CHECK 
@@ -152,15 +152,24 @@ OpEqual OpVerify
     // 3. BONDING CURVE LOGIC OPCODE
     // -------------------------------------------------------------------------
 
+    // Check the type of interaction with the bounding curve (Token purchase or sold) 
+    0 OpTxOutputAmount 0 OpTxInputAmount OpGreaterThanOrEqual OpIf
+        //we have to verify K_out – K_in >= 1/2*(P(V2)-P(V1))*(V2-V1)
 
+    OpElse
+        //we have to verify K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)
+
+    OpEndif
 
 OpElse
 
     // =========================================================================
     // 4. AMM LOGIC OPCODE
     // =========================================================================
-    
 
+    //we have to verify K_out * T_out >= K_in * T_in
+    //we push K_out * T_out on the stack
+    0 OpTxOutputAmount 
 
 
 
