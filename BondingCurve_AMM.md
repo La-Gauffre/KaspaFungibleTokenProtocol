@@ -105,9 +105,13 @@ Additionally, the covenant guarantees that the transition can only occur when th
 The protocol will force to always have the Bonding Curve / AMM UTXO in Input 0 & in Output 0.
 The `scriptPubKey` is constructed as follows:
 
-`[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...Security + Binary flag Logic Opcode...] [...Bonding curve Logic Opcode...] [...Bonding curve Logic Opcode...]`
+`[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...Binary flag Logic Opcode + Security...] [...Bonding curve Logic Opcode...] [...AMM Logic Opcode...]`
 
-Where `<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol 
+Where:
+    `<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol.
+    `<LEN_KFTP>` defined below is the total lenght of the KaspFungibleTokenProtocol.
+    `<LEN_TOTAL>` defined below is the total lenght of the KaspFungibleTokenProtocol.
+        
 
 #### Assembly Implementation
 
@@ -115,25 +119,53 @@ Where `<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFun
 ```
 
 // -------------------------------------------------------------------------
-// 1. SECURITY & INITIALIZATION
+// 1. KASPAFUNGIBLETOKENPROTOCOL
 // -------------------------------------------------------------------------
+
+
+
+// -------------------------------------------------------------------------
+// 2. BINARY FLAG + SECURITY CHECK 
+// -------------------------------------------------------------------------
+
+// Binary Flag
+
+0 or 1 (1 byte)
+
+// Duplication of the Binary flag as we'll need to check the output also
+
+OpDup
 
 // Check Input 0 & Output 0 have the same covenant_ID
 0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual 
 OpTxInputIndex OpTxInputCovId 0 OpTxOutputCovId OpEqual
 
+// Check that logic is the same between Input 0 and output 0
+0 <LEN_KFTP+1> <LEN_TOTAL> OpTxInputSpkSubstr  // Extract Input Logic without Token logic and binary flag
+0 <LEN_KFTP+1> <LEN_TOTAL> OpTxOutputSpkSubstr // Extract Output Logic without Token logic and binary flag
+OpEqual
 
-// Check Output Count < 6
-OpTxOutputCount 6 OpLessThan OpVerify
+// Check if we calculate via the bonding curve or the AMM
 
-// Initialize accumulator to 0 on the stack
-// Stack: [0]
-0
+// -------------------------------------------------------------------------
+// 3. BONDING CURVE LOGIC OPCODE
+// -------------------------------------------------------------------------
+
 
 
 // =========================================================================
-// 2. INPUTS LOOP (SUM) - INDEX 0 to 4
+// 4. AMM LOGIC OPCODE
 // =========================================================================
+
+
+
+
+
+
+
+
+
+
 
 // --- INPUT 0 ---
 0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
