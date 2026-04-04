@@ -137,16 +137,16 @@ Where:
 OpDup
 
 // Check Input 0 & Output 0 have the same covenant_ID
-0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual 
-OpTxInputIndex OpTxInputCovId 0 OpTxOutputCovId OpEqual
+0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpVerify
+OpTxInputIndex OpTxInputCovId 0 OpTxOutputCovId OpEqual OpVerify
 
 // Check that logic is the same between Input 0 and output 0
 0 <LEN_KFTP+1> <LEN_TOTAL> OpTxInputSpkSubstr  // Extract Input Logic without Token logic and binary flag
 0 <LEN_KFTP+1> <LEN_TOTAL> OpTxOutputSpkSubstr // Extract Output Logic without Token logic and binary flag
-OpEqual
+OpEqual OpVerify
 
 // Check if we calculate via the bonding curve or the AMM
-0 
+0 OpEqual Op
 // -------------------------------------------------------------------------
 // 3. BONDING CURVE LOGIC OPCODE
 // -------------------------------------------------------------------------
