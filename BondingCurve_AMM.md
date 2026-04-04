@@ -119,7 +119,9 @@ Where `<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFun
 // -------------------------------------------------------------------------
 
 // Check Input 0 & Output 0 have the same covenant_ID
-OpTxInputCount 6 OpLessThan OpVerify
+0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual 
+OpTxInputIndex OpTxInputCovId 0 OpTxOutputCovId OpEqual
+
 
 // Check Output Count < 6
 OpTxOutputCount 6 OpLessThan OpVerify
