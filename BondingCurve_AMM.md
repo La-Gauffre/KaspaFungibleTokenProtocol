@@ -67,15 +67,17 @@ As 'K_out >= K_in', we need to verifiy the below inequality:
 
 ` K_out – K_in >= 1/2*(P(V2)-P(V1))*(V2-V1)`
 
-So, we are sure to pay more or equal than the cumulated price
-To help us in the script section, `P(V2)-P(V1)` = a * V2 - a * V1 = a * (S - T_out) - a * (S - T_in)`
+So, we are sure to pay more or equal than the cumulated price.
+To help us in the script section, `P(V2)-P(V1) = a * V2 - a * V1 = a * (S - T_out) - a * (S - T_in)`
+
 ### Token Sold (Interaction with Bonding Curve) 
 
 As 'K_out <= K_in', we need to verifiy the below inequality:
 
 ` K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)`
 
-So, we are sure to receive less or equal than the cumulated price
+So, we are sure to receive less or equal than the cumulated price.
+To help us in the script section, `P(V1)-P(V2) = a * V1 - a * V2 = a * (S - T_in) - a * (S - T_out)`
 
 ---
 
