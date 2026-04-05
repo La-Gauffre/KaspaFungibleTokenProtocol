@@ -101,6 +101,7 @@ A binary flag is embedded at the beginning of the covenant script to determine w
 The covenant enforces that this transition is **irreversible**, ensuring that once the AMM phase is reached, the system cannot revert to the bonding curve.
 
 Additionally, the covenant guarantees that the transition can only occur when the bonding curve conditions are fully satisfied, preventing any premature or invalid state change.
+We will swicth the binary flag once the supply sold is over a constant 'S1' and below a constant 'S2'. Both constant are 64 byte type.
 
 #### Script Structure
 
@@ -114,6 +115,7 @@ Where:
     - `<LEN_KFTP>` defined below is the total lenght of the KaspFungibleTokenProtocol.
     - `<LEN_TOTAL>` defined below is the total lenght of the KaspFungibleTokenProtocol.
     - `a` & `S` are the Bonding curve constant and the total supply of the token (64-bytes number)
+    - `S1` & `S2` are the constants to delimit the boudarie between the bonding curve and the AMM 
         
 
 #### Assembly Implementation
@@ -210,12 +212,22 @@ OpEqual OpVerify
         
 
         //Next we multiply (P(V1)-P(V2))*(V1-V2) and compare it to (K_in – K_out)*2
+        OpMul
+        OpLessThanOrEqual OpVerify
 
     OpEndif
 
-
-    // Check the binary flag
-
+    // Next we check the binary flag in Output
+    <S1> <S> 
+    0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr OpBin2Num                           // Extract Number of Token in Output
+    OpSub                                                                                // Calculate total supply sold
+    OpGreaterThan OpIf                                                                   // Compare total supply sold vs S1
+        0 <LEN_KFTP> <LEN_KFTP+1> OpTxOutputSpkSubstr OpBin2Num 0 OpEqual OpVerify       // Check Output Binary Flag is equal to 0
+    OpElse
+        <S2> <S>
+        0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr OpBin2Num                       // Extract Number of Token in Output
+        OpGreaterThan OpVerify
+        0 <LEN_KFTP> <LEN_KFTP+1> OpTxOutputSpkSubstr OpBin2Num 1 OpEqual OpVerify       // Check Output Binary Flag is equal to 1
 OpElse
 
     // =========================================================================
