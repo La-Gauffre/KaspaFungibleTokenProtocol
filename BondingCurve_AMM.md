@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This paper introduces a covenant-based mechanism for launching and distributing tokens built on top of the [KaspaFungibleTokenProtocol](https://github.com/La-Gauffre/KaspaFungibleTokenProtocol/blob/main/KaspaFungibleTokenProtocol.md) with the states in **the same UTXO**. The proposed design combines two distinct liquidity phases: an initial **Bonding Curve** distribution phase, followed by a seamless transition to an **Automated Market Maker (AMM)**.
+This paper introduces a covenant-based mechanism for launching and distributing tokens built on top of the [KaspaFungibleTokenProtocol](https://github.com/La-Gauffre/KaspaFungibleTokenProtocol/blob/main/KaspaFungibleTokenProtocol.md), with all states stored within **the same UTXO**. The proposed design combines two distinct liquidity phases: an initial **Bonding Curve** distribution phase, followed by a seamless transition to an **Automated Market Maker (AMM)**.
 
 During the first phase, tokens are issued deterministically along a predefined pricing curve, ensuring predictable and transparent price discovery from genesis. Once the bonding curve reaches its completion threshold, liquidity is migrated into an AMM, enabling continuous and decentralized trading.
 
@@ -17,7 +17,6 @@ The bonding curve defines a deterministic relationship between the token price a
 In this protocol, we adopt a simple linear pricing function:
 
 `P(V) = a * V + b`
-
 
 Where:
 
@@ -40,10 +39,8 @@ Let:
 
 The cumulative number of tokens sold is:
 
-`V1 = S - T_in`
-
+`V1 = S - T_in`  
 `V2 = S - T_out`
-
 
 Let:
 
@@ -52,42 +49,49 @@ Let:
 
 Then, the total Kaspa exchanged should correspond to the area under the bonding curve between `V1` and `V2`:
 
+`| K_out – K_in | = 1/2(V2^2 - V1^2)`
 
-`| K_out – K_in | = 1/2(V2^2-V1^2)` 
+However, to mitigate the risk of integer overflows, the covenant design should avoid squared computations and other high-growth arithmetic operations. For a linear pricing function, the integral between two points can be simplified into a closed-form expression. The area under the curve is equivalent to the product of the change in volume and the average of the initial and final prices, eliminating the need for higher-order computations.
 
-However, To mitigate the risk of integer overflows, the covennat design should avoid squared computation and other high-growth arithmetic operations. For a linear pricing function, the integral between two points can be simplified into a closed-form expression. The area under the curve is equivalent to the product of the change in volume and the average of the initial and final prices, eliminating the need for higher-order computations. Then we need to verify: 
+Thus, we verify:
 
-`| K_out – K_in | = 1/2*(P(V2)-P(V1))*(V2-V1)`
+`| K_out – K_in | = 1/2 * (P(V2) - P(V1)) * (V2 - V1)`
 
-Because exact equality is impractical to enforce on-chain due to  rounding, the covenant must verifies **inequality constraints** based on the transaction direction:
+Because exact equality is impractical to enforce on-chain due to rounding, the covenant must verify **inequality constraints** based on the transaction direction:
 
-### Token Purchase (Interaction with Bonding Curve) 
+### Token Purchase (Interaction with Bonding Curve)
 
-As 'K_out >= K_in', we need to verifiy the below inequality:
+As `K_out >= K_in`, we need to verify the following inequality:
 
-` K_out – K_in >= 1/2*(P(V2)-P(V1))*(V2-V1)`
+`K_out – K_in >= 1/2 * (P(V2) - P(V1)) * (V2 - V1)`
 
-So, we are sure to pay more or equal than the cumulated price.
-To help us in the script section, `P(V2)-P(V1) = a * V2 - a * V1 = a * (S - T_out) - a * (S - T_in)`
+This ensures that the user pays at least the cumulative price.
 
-### Token Sold (Interaction with Bonding Curve) 
+To simplify implementation in the script:
 
-As 'K_out <= K_in', we need to verifiy the below inequality:
+`P(V2) - P(V1) = a * V2 - a * V1 = a * (S - T_out) - a * (S - T_in)`
 
-` K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)`
+### Token Sale (Interaction with Bonding Curve)
 
-So, we are sure to receive less or equal than the cumulated price.
-To help us in the script section, `P(V1)-P(V2) = a * V1 - a * V2 = a * (S - T_in) - a * (S - T_out)`
+As `K_out <= K_in`, we need to verify the following inequality:
+
+`K_in – K_out <= 1/2 * (P(V1) - P(V2)) * (V1 - V2)`
+
+This ensures that the user receives at most the cumulative price.
+
+To simplify implementation in the script:
+
+`P(V1) - P(V2) = a * V1 - a * V2 = a * (S - T_in) - a * (S - T_out)`
 
 ---
 
 ## Automated Market Maker (AMM)
 
-Once the price is above the target price of the bounding curve, then, we step up in the AMM mode. we need to check that for each transaction, the constant of the AMM is the same between the input and the output. 
+Once the price exceeds the target defined by the bonding curve, the system transitions into AMM mode. For each transaction, we must verify that the AMM invariant remains consistent between input and output states.
 
-We have to verify: 
+We enforce:
 
-`K_out * T_out >= K_in * T_in` 
+`K_out * T_out >= K_in * T_in`
 
 ---
 
@@ -96,27 +100,29 @@ We have to verify:
 A binary flag is embedded at the beginning of the covenant script to determine which pricing mechanism is active.
 
 - If the value is `0`, the system operates under the bonding curve model.  
-- Once the bonding curve reaches its completion threshold, the flag is permanently switched to `1`, activating the AMM mode.
+- Once the bonding curve reaches its completion threshold, the flag is permanently switched to `1`, activating AMM mode.
 
 The covenant enforces that this transition is **irreversible**, ensuring that once the AMM phase is reached, the system cannot revert to the bonding curve.
 
 Additionally, the covenant guarantees that the transition can only occur when the bonding curve conditions are fully satisfied, preventing any premature or invalid state change.
-We will swicth the binary flag once the supply sold is over a constant 'S1' and below a constant 'S2'. Both constant are 64 byte type.
+
+The binary flag is switched once the sold supply exceeds a constant `S1` and remains below a constant `S2`. Both constants are 64-byte values.
 
 #### Script Structure
 
-The protocol will force to always have the Bonding Curve / AMM UTXO in Input 0 & in Output 0.
+The protocol enforces that the Bonding Curve / AMM UTXO is always located at Input 0 and Output 0.
+
 The `scriptPubKey` is constructed as follows:
 
-`[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...Binary flag Logic Opcode + Security...] [...Bonding curve Logic Opcode...] [...AMM Logic Opcode...]`
+`[ ...KaspaFungibleTokenProtocol Logic Opcodes... ] [...Binary Flag Logic Opcode + Security...] [...Bonding Curve Logic Opcode...] [...AMM Logic Opcode...]`
 
 Where:
-    -`<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol.
-    - `<LEN_KFTP>` defined below is the total lenght of the KaspFungibleTokenProtocol.
-    - `<LEN_TOTAL>` defined below is the total lenght of the KaspFungibleTokenProtocol.
-    - `a` & `S` are the Bonding curve constant and the total supply of the token (64-bytes number)
-    - `S1` & `S2` are the constants to delimit the boudarie between the bonding curve and the AMM 
-        
+
+- `<LEN_LOGIC>` is defined below and has the same length as in the KaspaFungibleTokenProtocol  
+- `<LEN_KFTP>` is defined below and represents the total length of the KaspaFungibleTokenProtocol  
+- `<LEN_TOTAL>` is defined below and represents the total length of the full script  
+- `a` and `S` are the bonding curve constants and the total token supply (64-byte numbers)  
+- `S1` and `S2` are constants defining the boundary between the bonding curve and the AMM phase  
 
 #### Assembly Implementation
 
