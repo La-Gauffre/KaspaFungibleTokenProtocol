@@ -68,7 +68,7 @@ As 'K_out >= K_in', we need to verifiy the below inequality:
 ` K_out – K_in >= 1/2*(P(V2)-P(V1))*(V2-V1)`
 
 So, we are sure to pay more or equal than the cumulated price
-
+To help us in the script section, `P(V2)-P(V1)` = a * V2 - a * V1 = a * (S - T_out) - a * (S - T_in)`
 ### Token Sold (Interaction with Bonding Curve) 
 
 As 'K_out <= K_in', we need to verifiy the below inequality:
@@ -111,7 +111,7 @@ Where:
     -`<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol.
     - `<LEN_KFTP>` defined below is the total lenght of the KaspFungibleTokenProtocol.
     - `<LEN_TOTAL>` defined below is the total lenght of the KaspFungibleTokenProtocol.
-    - `a` & `b` are the Bonding curve constant (64-bytes number)
+    - `a` & `S` are the Bonding curve constant and the total supply of the token (64-bytes number)
         
 
 #### Assembly Implementation
@@ -160,6 +160,15 @@ OpEqual OpVerify
         0 OpTxInputAmount                                          // Extract Number of Kaspa in Intput
         OpSub Op2 OpMul                                            //Substract amount K_out – K_in, multiply it by 2 and push the number on the stack
 
+        //reminder `P(V2)-P(V1)` = a * V2 - a * V1 = a * (S - T_out) - a * (S - T_in)`
+
+        <A> <S>                                                    //Push A & S on the stack
+        0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr OpBin2Num // Extract Number of Token in Output
+        OpSub OpMul                                                //Push a * (S - T_out) on the stack
+        <A> <S>                                                    //Push A & S on the stack
+        0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr OpBin2Num  // Extract Number of Token in Intput
+        OpSub OpMul                                                //Push a * (S - T_in) on the stack
+        OpSub
     OpElse
         //we have to verify K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)
 
