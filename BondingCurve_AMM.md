@@ -108,9 +108,10 @@ The `scriptPubKey` is constructed as follows:
 `[ ...KaspFungibleTokenProtocol Logic Opcodes... ] [...Binary flag Logic Opcode + Security...] [...Bonding curve Logic Opcode...] [...AMM Logic Opcode...]`
 
 Where:
-    `<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol.
-    `<LEN_KFTP>` defined below is the total lenght of the KaspFungibleTokenProtocol.
-    `<LEN_TOTAL>` defined below is the total lenght of the KaspFungibleTokenProtocol.
+    -`<LEN_LOGIC>` defined below is the same lenght than the one in the KaspFungibleTokenProtocol.
+    - `<LEN_KFTP>` defined below is the total lenght of the KaspFungibleTokenProtocol.
+    - `<LEN_TOTAL>` defined below is the total lenght of the KaspFungibleTokenProtocol.
+    - `a` & `b` are the Bonding curve constant (64-bytes number)
         
 
 #### Assembly Implementation
@@ -155,6 +156,9 @@ OpEqual OpVerify
     // Check the type of interaction with the bounding curve (Token purchase or sold) 
     0 OpTxOutputAmount 0 OpTxInputAmount OpGreaterThanOrEqual OpIf
         //we have to verify K_out – K_in >= 1/2*(P(V2)-P(V1))*(V2-V1)
+        0 OpTxOutputAmount                                         // Extract Number of Kaspa in Output
+        0 OpTxInputAmount                                          // Extract Number of Kaspa in Intput
+        OpSub Op2 OpMul                                            //Substract amount K_out – K_in, multiply it by 2 and push the number on the stack
 
     OpElse
         //we have to verify K_in – K_out <= 1/2*(P(V1)-P(V2))*(V1-V2)
@@ -175,8 +179,8 @@ OpElse
     0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr OpBin2Num // Extract Number of Token in Output
     0 OpTxOutputAmount                                         // Extract Number of Kaspa in Output
     OpMul
-    0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr OpBin2Num // Extract Number of Token in Intput
-    0 OpTxInputAmount                                         // Extract Number of Kaspa in Intput
+    0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr OpBin2Num  // Extract Number of Token in Intput
+    0 OpTxInputAmount                                          // Extract Number of Kaspa in Intput
     OpMul
     OpGreatherThanOrEqual OpVerify
 
