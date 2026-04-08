@@ -57,7 +57,8 @@ OpTxOutputCount 6 OpLessThan OpVerify
 0 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
     0 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
     0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr  // Extract Amount
-    OpBin2Num OpAdd //Add amount on the stack
+    OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+    OpAdd //Add amount on the stack
 OpEndIf
 
 
@@ -66,7 +67,8 @@ OpTxInputCount 1 OpGreaterThan OpIf
     1 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
         1 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
         1 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr  // Extract Amount
-        OpBin2Num OpAdd //Add amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
@@ -75,7 +77,8 @@ OpTxInputCount Op2 OpGreaterThan OpIf
     Op2 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
         Op2 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
         Op2 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr  // Extract Amount
-        OpBin2Num OpAdd //Add amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
@@ -84,7 +87,8 @@ OpTxInputCount Op3 OpGreaterThan OpIf
     Op3 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
         Op3 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
         Op3 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr  // Extract Amount
-        OpBin2Num OpAdd //Add amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
@@ -93,7 +97,8 @@ OpTxInputCount Op4 OpGreaterThan OpIf
     Op4 OpTxInputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf 
         Op4 0  <LEN_LOGIC> OpTxInputSpkSubstr OpTxInputIndex 0 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify // Verify Script Integrity 
         Op4 <LEN_LOGIC> <LEN_LOGIC+64> OpTxInputSpkSubstr  // Extract Amount
-        OpBin2Num OpAdd //Add amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpAdd //Add amount on the stack
     OpEndIf
 OpEndIf
 
@@ -106,7 +111,8 @@ OpEndIf
 0 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
         0 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
         0 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr  //Extract Amount
-        OpBin2Num OpSub //Substract amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpSub //Substract amount on the stack
 OpEndIf
 
 // --- OUTPUT 1 ---
@@ -114,7 +120,8 @@ OpTxOutputCount 1 OpGreaterThan OpIf
     1 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
         1 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
         1 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr  //Extract Amount
-        OpBin2Num OpSub //Substract amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
@@ -123,7 +130,8 @@ OpTxOutputCount Op2 OpGreaterThan OpIf
     Op2 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
         Op2 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
         Op2 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr  //Extract Amount
-        OpBin2Num OpSub //Substract amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
@@ -132,7 +140,8 @@ OpTxOutputCount Op3 OpGreaterThan OpIf
     Op3 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
         Op3 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
         Op3 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr  //Extract Amount
-        OpBin2Num OpSub //Substract amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
@@ -141,7 +150,8 @@ OpTxOutputCount Op4 OpGreaterThan OpIf
     Op4 OpTxOutputCovId OpTxInputIndex OpTxInputCovId OpEqual OpIf   
         Op4 0 <LEN_LOGIC> OpTxOutputSpkSubstr OpTxInputIndex 0 OpPushData1 <LEN_LOGIC> OpTxInputSpkSubstr OpEqualVerify //Verify Script Integrity 
         Op4 <LEN_LOGIC> <LEN_LOGIC+64> OpTxOutputSpkSubstr  //Extract Amount
-        OpBin2Num OpSub //Substract amount on the stack
+        OpBin2Num OpDup 0 OpGreatherThan OpVerify //Check Amount of token is > 0
+        OpSub //Substract amount on the stack
     OpEndIf
 OpEndIf
 
@@ -153,7 +163,7 @@ OpEndIf
 // Stack state: [Accumulator]
 // Must be equal to 0 (Total Inputs == Total Outputs)
 0
-OpEqual
+OpEqual OpVerify
 
 // Amount of tokens
 0x64  <Amount>  OpDrop
