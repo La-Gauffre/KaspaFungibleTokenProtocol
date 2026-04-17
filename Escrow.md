@@ -1,4 +1,4 @@
-# Escrow using the KaspaFungibleTokenProtocol
+# Escrow using the KaspaFungibleTokenProtocol (Draft)
 
 ## Abstract
 
