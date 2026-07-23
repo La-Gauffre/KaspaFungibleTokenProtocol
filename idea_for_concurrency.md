@@ -42,6 +42,7 @@ AMM Covenant ID
 Each UTXO contains the complete AMM state and follows the exact same covenant rules.
 The covenant logic remains unique, but the executable state is distributed across multiple UTXOs.
 We also create several Pool UTXOs that all belong to the same covenant ID, which is the covenant ID of the AMM contract.
+
 ---
 
 ## Achieving Concurrent Swaps
