@@ -5,7 +5,7 @@
 Traditional DeFi AMMs are generally designed around a single mutable state representing a liquidity pool.
 
 For example, on account-based blockchains, an AMM contract maintains a pool containing two assets:
-- A Token/A coin
+- A token/a coin
 - A token
 
 Every swap modifies this shared state by updating the reserves of both assets.
