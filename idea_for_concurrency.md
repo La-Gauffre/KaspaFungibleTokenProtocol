@@ -57,8 +57,8 @@ Instead of having every user compete for the same pool state, the frontend can d
 
 | 🟢 User A Transaction | 🔵 User B Transaction |
 | :--- | :--- |
-| **Input:** Pool UTXO #3 | **Input:** Pool UTXO #7 |
-| **Output:** Updated Pool UTXO #3 | **Output:** Updated Pool UTXO #7 |
+| **Input:** Pool UTXO #0 to #X | **Input:** Pool UTXO #X+1 to #Y |
+| **Output:** Updated Pool UTXO #0 to #X  | **Output:** Updated Pool UTXO #X+1 to #Y |
 
 Because the two transactions consume different UTXOs, they do not conflict.
 
@@ -88,24 +88,8 @@ All pool UTXOs share the same:
 - covenant ID
 - AMM logic
 - trading pair
-- pricing mechanism
 
 Furthermore, a single transaction can consume multiple pool UTXOs simultaneously.
-
-For example, a large swap could use:
-
-```text
-Transaction:
-
-Inputs:
-Pool UTXO #1
-Pool UTXO #2
-Pool UTXO #3
-
-Outputs:
-Updated Pool UTXOs
-User swap output
-```
 
 This means liquidity remains unified at the protocol level.
 
@@ -116,22 +100,6 @@ The multiple UTXOs are only a way to distribute the state and remove unnecessary
 ## Handling Contention and Slippage Protection
 
 A possible edge case is that one user transaction consumes all available pool UTXOs.
-
-For example:
-
-**Before:**
-```text
-Pool UTXO #1
-Pool UTXO #2
-Pool UTXO #3
-...
-Pool UTXO #10
-```
-
-**Large transaction consumes:**
-```text
-Pool UTXO #1 → #10
-```
 
 In this case, another user may need to wait until new pool UTXOs are created.
 
